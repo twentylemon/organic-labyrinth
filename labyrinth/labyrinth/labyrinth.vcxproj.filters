@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\maze">
+      <UniqueIdentifier>{ce5c4d4e-1007-43e4-8a5d-814425373d4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\maze">
+      <UniqueIdentifier>{99f3d5b6-5960-4781-9ffc-faa981ea8a04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\maze\forces">
+      <UniqueIdentifier>{656b035c-b863-4e6a-9315-6dd4801c1e67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\maze\forces">
+      <UniqueIdentifier>{9315ae53-3c51-4411-b1cf-dc7998d55c18}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="maze\Point.cpp">
+      <Filter>Source Files\maze</Filter>
+    </ClCompile>
+    <ClCompile Include="maze\LineLoop.cpp">
+      <Filter>Source Files\maze</Filter>
+    </ClCompile>
+    <ClCompile Include="maze\forces\BrownianMotion.cpp">
+      <Filter>Source Files\maze\forces</Filter>
+    </ClCompile>
+    <ClCompile Include="maze\forces\Fairing.cpp">
+      <Filter>Source Files\maze\forces</Filter>
+    </ClCompile>
+    <ClCompile Include="maze\forces\LennardJones.cpp">
+      <Filter>Source Files\maze\forces</Filter>
+    </ClCompile>
+    <ClCompile Include="maze\forces\AttractionForce.cpp">
+      <Filter>Source Files\maze\forces</Filter>
+    </ClCompile>
+    <ClCompile Include="maze\forces\Morse.cpp">
+      <Filter>Source Files\maze\forces</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="maze\LineLoop.h">
+      <Filter>Header Files\maze</Filter>
+    </ClInclude>
+    <ClInclude Include="maze\Point.h">
+      <Filter>Header Files\maze</Filter>
+    </ClInclude>
+    <ClInclude Include="maze\forces\Force.h">
+      <Filter>Header Files\maze\forces</Filter>
+    </ClInclude>
+    <ClInclude Include="maze\forces\BrownianMotion.h">
+      <Filter>Header Files\maze\forces</Filter>
+    </ClInclude>
+    <ClInclude Include="maze\forces\Fairing.h">
+      <Filter>Header Files\maze\forces</Filter>
+    </ClInclude>
+    <ClInclude Include="maze\forces\LennardJones.h">
+      <Filter>Header Files\maze\forces</Filter>
+    </ClInclude>
+    <ClInclude Include="maze\forces\AttractionForce.h">
+      <Filter>Header Files\maze\forces</Filter>
+    </ClInclude>
+    <ClInclude Include="maze\forces\Morse.h">
+      <Filter>Header Files\maze\forces</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
