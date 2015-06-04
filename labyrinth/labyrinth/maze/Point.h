@@ -58,9 +58,6 @@ public:
     // returns scale*this
     Point scale(double scale) const;
 
-    // returns a point which is `distance` away from the origin
-    Point normalize(double distance = 1.0) const;
-
     // returns true if the points are in the same location in space
     bool operator==(const Point& rhs) const;
 

@@ -17,23 +17,26 @@ public:
     LineLoop();
 
     // splits the two points into 3, placing a third point at their average position
-    void split(unsigned pt1, unsigned pt2);
+    void split(int pt1, int pt2);
 
     // merges the point `lost` into `merged`
-    void merge(unsigned merged, unsigned lost);
+    void merge(int merged, int lost);
 
     // returns the point in the loop at the given index, the index is automatically cyclicized
     Point& at(int idx);
     const Point& at(int idx) const;
-    Point& operator[](unsigned idx);
-    const Point& operator[](unsigned idx) const;
+    Point& operator[](int idx);
+    const Point& operator[](int idx) const;
+
+    // returns the number of points between pt1 and pt2
+    int neighbours(int pt1, int pt2) const;
 
     // write to stream
     friend std::ostream& operator<<(std::ostream& out, const LineLoop& loop);
 
 private:
     // returns the cyclic index of `idx`
-    unsigned get_idx(unsigned idx) const;
+    int get_idx(int idx) const;
 };
 }
 #endif

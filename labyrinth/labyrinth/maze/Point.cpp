@@ -85,14 +85,6 @@ Point Point::scale(double scale) const {
     return Point(scale*getX(), scale*getY());
 }
 
-Point Point::normalize(double distance) const {
-    double length = magnitude();
-    if (length > 0) {
-        return scale(distance / length);
-    }
-    return ORIGIN;
-}
-
 bool Point::operator==(const Point& rhs) const {
     return getX() == rhs.getX() && getY() == rhs.getY();
 }
@@ -116,7 +108,7 @@ Point Point::avgBetween(const Point& point) const {
 }
 
 double Point::distance(const Point& point) const {
-    return std::pow(getX()-point.getX(), 2) + std::pow(getY()-point.getY(), 2);
+    return std::sqrt(std::pow(getX()-point.getX(), 2) + std::pow(getY()-point.getY(), 2));
 }
 
 double Point::magnitude() const {
@@ -125,7 +117,7 @@ double Point::magnitude() const {
 
 Point Point::closestOnSegment(const Point& start, const Point& end) const {
     Point segment = end.subtract(start);
-    double dist = subtract(start).dot(segment) / segment.magnitude();
+    double dist = subtract(start).dot(segment) / std::pow(segment.magnitude(), 2);
     if (dist < 0) {
         return start;
     }

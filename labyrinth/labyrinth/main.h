@@ -1,5 +1,9 @@
 
 #include <iostream>
+#include <GL/glut.h>
 
+#include "maze/Maze.h"
 
-#include "maze/LineLoop.h"
+#include "util.h"
+
+extern maze::Maze laby;

@@ -51,6 +51,12 @@
     <ClCompile Include="maze\forces\Morse.cpp">
       <Filter>Source Files\maze\forces</Filter>
     </ClCompile>
+    <ClCompile Include="maze\Maze.cpp">
+      <Filter>Source Files\maze</Filter>
+    </ClCompile>
+    <ClCompile Include="util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -79,6 +85,12 @@
     </ClInclude>
     <ClInclude Include="maze\forces\Morse.h">
       <Filter>Header Files\maze\forces</Filter>
+    </ClInclude>
+    <ClInclude Include="maze\Maze.h">
+      <Filter>Header Files\maze</Filter>
+    </ClInclude>
+    <ClInclude Include="util.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

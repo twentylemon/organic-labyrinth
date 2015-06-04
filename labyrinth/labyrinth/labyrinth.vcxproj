@@ -64,6 +64,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="util.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="maze\forces\AttractionForce.cpp" />
     <ClCompile Include="maze\forces\BrownianMotion.cpp" />
@@ -71,9 +72,11 @@
     <ClCompile Include="maze\forces\LennardJones.cpp" />
     <ClCompile Include="maze\forces\Morse.cpp" />
     <ClCompile Include="maze\LineLoop.cpp" />
+    <ClCompile Include="maze\Maze.cpp" />
     <ClCompile Include="maze\Point.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="util.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="maze\forces\AttractionForce.h" />
     <ClInclude Include="maze\forces\BrownianMotion.h" />
@@ -82,6 +85,7 @@
     <ClInclude Include="maze\forces\LennardJones.h" />
     <ClInclude Include="maze\forces\Morse.h" />
     <ClInclude Include="maze\LineLoop.h" />
+    <ClInclude Include="maze\Maze.h" />
     <ClInclude Include="maze\Point.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
