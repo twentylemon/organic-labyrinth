@@ -10,6 +10,7 @@
 
 namespace maze {
 
+// list of points in the maze structure
 class LineLoop : public std::vector<Point>
 {
 public:
@@ -22,8 +23,8 @@ public:
     void merge(unsigned merged, unsigned lost);
 
     // returns the point in the loop at the given index, the index is automatically cyclicized
-    Point& get(int idx);
-    const Point& get(int idx) const;
+    Point& at(int idx);
+    const Point& at(int idx) const;
     Point& operator[](unsigned idx);
     const Point& operator[](unsigned idx) const;
 

@@ -4,7 +4,7 @@
 
 namespace maze {
 
-static const Point origin = Point(0, 0);
+const Point Point::ORIGIN = Point(0.0, 0.0);
 
 Point::Point() :
     x(0),
@@ -65,6 +65,52 @@ void Point::setLocked(bool locked) {
 }
 
 
+Point Point::operator+(const Point& rhs) const {
+    return Point(getX()+rhs.getX(), getY()+rhs.getY());
+}
+
+Point Point::add(const Point& rhs) const {
+    return *this + rhs;
+}
+
+Point Point::operator-(const Point& rhs) const {
+    return Point(getX()-rhs.getX(), getY()-rhs.getY());
+}
+
+Point Point::subtract(const Point& rhs) const {
+    return *this - rhs;
+}
+
+Point Point::scale(double scale) const {
+    return Point(scale*getX(), scale*getY());
+}
+
+Point Point::normalize(double distance) const {
+    double length = magnitude();
+    if (length > 0) {
+        return scale(distance / length);
+    }
+    return ORIGIN;
+}
+
+bool Point::operator==(const Point& rhs) const {
+    return getX() == rhs.getX() && getY() == rhs.getY();
+}
+
+double Point::dot(const Point& rhs) const {
+    return getX()*rhs.getX() + getY()*rhs.getY();
+}
+
+Point& Point::operator+=(const Point& rhs) {
+    setPosition(getX()+rhs.getX(), getY()+rhs.getY());
+    return *this;
+}
+
+Point& Point::operator-=(const Point& rhs) {
+    setPosition(getX()-rhs.getX(), getY()-rhs.getY());
+    return *this;
+}
+
 Point Point::avgBetween(const Point& point) const {
     return Point((getX()+point.getX())/2.0, (getY()+point.getY())/2.0);
 }
@@ -74,6 +120,18 @@ double Point::distance(const Point& point) const {
 }
 
 double Point::magnitude() const {
-    return distance(origin);
+    return distance(ORIGIN);
+}
+
+Point Point::closestOnSegment(const Point& start, const Point& end) const {
+    Point segment = end.subtract(start);
+    double dist = subtract(start).dot(segment) / segment.magnitude();
+    if (dist < 0) {
+        return start;
+    }
+    else if (dist > 1) {
+        return end;
+    }
+    return start + segment.scale(dist);
 }
 }

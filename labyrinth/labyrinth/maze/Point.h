@@ -23,6 +23,9 @@ public:
     // sets the position and locked to the values given
     Point(double x, double y, bool locked);
 
+    // the point at the origin
+    static const Point ORIGIN;
+
     // returns the x position of this point
     double getX() const;
 
@@ -44,6 +47,29 @@ public:
     // sets whether or not this point should be locked in place
     void setLocked(bool locked);
 
+    // returns this + rhs
+    Point operator+(const Point& rhs) const;
+    Point add(const Point& rhs) const;
+
+    // returns this - rhs
+    Point operator-(const Point& rhs) const;
+    Point subtract(const Point& rhs) const;
+
+    // returns scale*this
+    Point scale(double scale) const;
+
+    // returns a point which is `distance` away from the origin
+    Point normalize(double distance = 1.0) const;
+
+    // returns true if the points are in the same location in space
+    bool operator==(const Point& rhs) const;
+
+    // returns the dot product of this*rhs
+    double dot(const Point& rhs) const;
+
+    // assignment operators
+    Point& operator+=(const Point& rhs);
+    Point& operator-=(const Point& rhs);
 
     // returns a point at the average location between this point and the other point given
     Point avgBetween(const Point& point) const;
@@ -53,6 +79,9 @@ public:
 
     // returns the squared magnitude of this point as a vector from the origin
     double magnitude() const;
+
+    // returns the point on the line segment that is closest to this point
+    Point closestOnSegment(const Point& start, const Point& end) const;
 
 private:
     // position of this point

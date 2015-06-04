@@ -9,11 +9,15 @@ LineLoop::LineLoop()
 }
 
 void LineLoop::split(unsigned pt1, unsigned pt2) {
-    insert(begin() + pt2, get(pt1).avgBetween(get(pt2)));
+    pt1 = get_idx(pt1);
+    pt2 = get_idx(pt2);
+    insert(begin() + pt2, std::vector<Point>::at(pt1).avgBetween(std::vector<Point>::at(pt2)));
 }
 
 void LineLoop::merge(unsigned merged, unsigned lost) {
-    at(merged) = get(merged).avgBetween(get(lost));
+    merged = get_idx(merged);
+    lost = get_idx(lost);
+    std::vector<Point>::at(merged) = std::vector<Point>::at(merged).avgBetween(std::vector<Point>::at(lost));
     erase(begin() + lost);
 }
 
@@ -21,20 +25,20 @@ unsigned LineLoop::get_idx(unsigned idx) const {
     return (idx + size()) % size();
 }
 
-Point& LineLoop::get(int idx) {
-    return at(get_idx(idx));
+Point& LineLoop::at(int idx) {
+    return std::vector<Point>::at(get_idx(idx));
 }
 
-const Point& LineLoop::get(int idx) const {
-    return at(get_idx(idx));
+const Point& LineLoop::at(int idx) const {
+    return std::vector<Point>::at(get_idx(idx));
 }
 
 Point& LineLoop::operator[](unsigned idx) {
-    return get(idx);
+    return at(idx);
 }
 
 const Point& LineLoop::operator[](unsigned idx) const {
-    return get(idx);
+    return at(idx);
 }
 
 std::ostream& operator<<(std::ostream& out, const LineLoop& loop) {

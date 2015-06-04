@@ -20,10 +20,10 @@ public:
     // returns the number of neighbours to ignore, in each direction
     int getNMin() const;
 
-    // returns the point at which the LJ-potential is zero (naturally)
+    // returns the distance at which the potential is zero (naturally)
     double getZeroPoint() const;
     
-    // returns the point at which to clamp to LJ-potential to zero
+    // returns the squared distance at which to clamp to potential to zero
     double getClampPoint() const;
 
     // sets the new average starting displacement from other points
@@ -33,6 +33,7 @@ public:
     void setNMin(int nMin);
 
     // sets the new zero point, where the potential is naturally zero
+    // note: this is NOT SQUARED distance
     void setZeroPoint(double zeroPoint);
 
     // sets the new clamp point, points further than this will be clamped to a potential of 0
