@@ -31,14 +31,13 @@ void displayFunc() {
 
 // timer function, apply forces each step
 void timerFunc(int i) {
-    std::cout << laby.getLoops().front().size() << std::endl;
     laby.applyForces();
     glutPostRedisplay();
-    glutTimerFunc(1000, timerFunc, i+1);
-    /*
-    std::cout << laby.getLoops().front() << std::endl;
-    system("pause");
-    */
+    glutTimerFunc(0, timerFunc, i+1);
+    std::cout << laby.getLoops().front().size() << std::endl;
+    std::ofstream out("../../output.svg");
+    writeSvg(out, laby);
+    out.close();
 }
 
 

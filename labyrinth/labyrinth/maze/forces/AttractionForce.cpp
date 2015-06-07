@@ -56,7 +56,7 @@ Point AttractionForce::act(const std::vector<LineLoop>& loops, int loopIdx, int 
                 const Point p = loops[loopIdx][pointIdx] - x;
                 // ignore if beyond the clamp distance
                 if (p.magnitude() < getClampPoint()*std::min(d/getDist(), delta(x))){
-                    force += p.scale(potential(p.magnitude() / d) / p.magnitude());
+                    force += p.scale(potential(p.magnitude()/* / d*/) / p.magnitude());
                 }
             }
         }

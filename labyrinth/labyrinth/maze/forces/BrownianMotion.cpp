@@ -9,12 +9,18 @@ BrownianMotion::BrownianMotion(double dist) :
     dist(dist),
     guassian(std::normal_distribution<double>())
 {
+#ifndef _DEBUG
+    initSeed();
+#endif
 }
     
 BrownianMotion::BrownianMotion(double dist, double mean, double stddev) :
     dist(dist),
     guassian(std::normal_distribution<double>(mean, stddev))
 {
+#ifndef _DEBUG
+    initSeed();
+#endif
 }
 
 double BrownianMotion::getDist() const {

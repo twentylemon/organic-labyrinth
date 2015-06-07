@@ -4,6 +4,7 @@
 #define MAZE_POINT_H
 
 #include <cmath>
+#include <string>
 
 namespace maze {
 
@@ -57,6 +58,9 @@ public:
 
     // returns scale*this
     Point scale(double scale) const;
+    
+    // returns a normalized version of the point, the specified distance (1 by default) from the origin
+    Point normalize(double length = 1.0) const;
 
     // returns true if the points are in the same location in space
     bool operator==(const Point& rhs) const;
@@ -79,6 +83,8 @@ public:
 
     // returns the point on the line segment that is closest to this point
     Point closestOnSegment(const Point& start, const Point& end) const;
+
+    std::string toString() const;
 
 private:
     // position of this point

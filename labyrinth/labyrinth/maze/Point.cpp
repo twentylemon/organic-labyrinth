@@ -85,6 +85,14 @@ Point Point::scale(double scale) const {
     return Point(scale*getX(), scale*getY());
 }
 
+Point Point::normalize(double length) const {
+    double len = magnitude();
+    if (len > 0) {
+        return scale(length / len);
+    }
+    return *this;
+}
+
 bool Point::operator==(const Point& rhs) const {
     return getX() == rhs.getX() && getY() == rhs.getY();
 }
@@ -125,5 +133,9 @@ Point Point::closestOnSegment(const Point& start, const Point& end) const {
         return end;
     }
     return start + segment.scale(dist);
+}
+
+std::string Point::toString() const {
+    return "(" + std::to_string(getX()) + "," + std::to_string(getY()) + ")";
 }
 }

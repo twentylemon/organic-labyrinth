@@ -55,15 +55,16 @@ const std::vector<LineLoop>& Maze::getLoops() const {
 }
 
 double Maze::getAvgDistance() const {
-    double distance = 0.0;
+    avgDist = 0.0;
     int num = 0;
     for (unsigned i = 0; i < loops.size(); i++) {
         num += loops[i].size();
         for (unsigned j = 0; j < loops[i].size(); j++) {
-            distance += loops[i][j].distance(loops[i][j+1]);
+            avgDist += loops[i][j].distance(loops[i][j+1]);
         }
     }
-    return distance / num;
+    avgDist = avgDist / num;
+    return avgDist;
 }
 
 
@@ -73,9 +74,17 @@ std::vector<LineLoop> Maze::calcEpoch() const {
     std::for_each(forces.begin(), forces.end(), [&](std::pair<Force*,std::function<double(const Point&)>> forcePair){
         for (unsigned i = 0; i < loops.size(); i++) {
             for (unsigned j = 0; j < loops[i].size(); j++) {
-                copy[i][j] += forcePair.first->act(loops, i, j, delta).scale(forcePair.second(loops[i][j]));
+                Point act = forcePair.first->act(loops, i, j, delta).scale(forcePair.second(loops[i][j]));
+                double max = avgDist / 3;
+                if (act.magnitude() > max) {
+                    act = act.normalize(max);
+                }
+                //std::cout << std::string(typeid(*forcePair.first).name()).substr(20) << ": " << act.toString() << std::endl;
+                copy[i][j] += act;
+                //copy[i][j] += forcePair.first->act(loops, i, j, delta).scale(forcePair.second(loops[i][j]));
             }
         }
+        //system("pause");
     });
 
     // split/merge points if they fall in their threshold values

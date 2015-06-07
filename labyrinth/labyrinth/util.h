@@ -1,4 +1,7 @@
 
+#include <string>
+#include <fstream>
+#include <iostream>
 
 #include "maze/Point.h"
 #include "maze/LineLoop.h"
@@ -13,3 +16,6 @@ maze::LineLoop getCircle(const maze::Point& center, double radius, unsigned numP
 
 // returns the maze to use
 maze::Maze makeMaze(int whichOne = 1);
+
+// writes out the maze?
+void writeSvg(std::ostream& out, const maze::Maze& laby);

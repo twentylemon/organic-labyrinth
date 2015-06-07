@@ -51,7 +51,8 @@ int LineLoop::neighbours(int pt1, int pt2) const {
 std::ostream& operator<<(std::ostream& out, const LineLoop& loop) {
     for (unsigned i = 0; i < loop.size(); i++) {
         out << "<line x1=\"" << loop[i].getX() << "\" y1=\"" << loop[i].getY() << "\""
-            << " x2=\"" << loop[i+1].getX() << "\" y2=\"" << loop[i+1].getY() << "\"/>"
+            << " x2=\"" << loop[i+1].getX() << "\" y2=\"" << loop[i+1].getY() << "\""
+            << " style=\"stroke:black;stroke-width:3;\"/>"
             << std::endl;
     }
     return out;

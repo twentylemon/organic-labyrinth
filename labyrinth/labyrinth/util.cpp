@@ -26,10 +26,10 @@ Maze makeMaze(int whichOne) {
         laby.addLoop(getCircle(Point::ORIGIN, 100.0, 10));
         D = laby.getAvgDistance();
         std::cout << "D = " << D << std::endl;
-        laby.addForce(new BrownianMotion(D), [](const Point&){ return 0.25; });
-        laby.addForce(new Fairing(), [](const Point&){ return 0.5; });
-        laby.addForce(new LennardJones(D, 2, D, 2*D), [](const Point&){ return std::pow(10, -30); });
-        laby.setSplitThreshold(D);
+        laby.addForce(new BrownianMotion(1), [](const Point&){ return 3; });
+        laby.addForce(new Fairing(), [](const Point&){ return 0.25; });
+        laby.addForce(new LennardJones(D, 2, 2*D, 5*D), [](const Point&){ return 1; });
+        laby.setSplitThreshold(1.25*D);
         laby.setMergeThreshold(0.25*D);
         break;
 
@@ -37,4 +37,35 @@ Maze makeMaze(int whichOne) {
         laby.addLoop(getCircle(Point::ORIGIN, 100.0, 100));
     }
     return laby;
+}
+
+
+void writeSvg(std::ostream& out, const Maze& laby) {
+    double xmin = 10E100, xmax = -10E100, ymin = 10E100, ymax = -10E100;
+    std::for_each(laby.getLoops().begin(), laby.getLoops().end(), [&xmin,&xmax,&ymin,&ymax](const LineLoop& loop){
+        xmin = std::min((*std::min_element(loop.begin(), loop.end(), [](const Point& p1, const Point& p2){
+            return p1.getX() < p2.getX();
+        })).getX(), xmin);
+        xmax = std::max((*std::max_element(loop.begin(), loop.end(), [](const Point& p1, const Point& p2){
+            return p1.getX() < p2.getX();
+        })).getX(), xmax);
+        ymin = std::min((*std::min_element(loop.begin(), loop.end(), [](const Point& p1, const Point& p2){
+            return p1.getY() < p2.getY();
+        })).getY(), ymin);
+        ymax = std::max((*std::max_element(loop.begin(), loop.end(), [](const Point& p1, const Point& p2){
+            return p1.getY() < p2.getY();
+        })).getY(), ymax);
+    });
+    double width = xmax - xmin;
+    double height = ymax - ymin;
+    out << "<?xml version=\"1.0\"?>" << std::endl
+        << "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">" << std::endl
+        << "<svg width=\"" << 600 << "\" height=\"" << 600 << "\" "
+        << "viewBox=\"" << xmin << " " << ymin << " " << width << " " << height << "\" "
+        << "version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">" << std::endl;
+
+    std::for_each(laby.getLoops().begin(), laby.getLoops().end(), [&out](const LineLoop& loop) {
+        out << loop;
+    });
+    out << "</svg>" << std::endl;
 }

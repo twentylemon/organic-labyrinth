@@ -66,6 +66,8 @@ private:
 
     // merge and split thresholds
     double mergeThreshold, splitThreshold;
+
+    mutable double avgDist;
 };
 }
 #endif
