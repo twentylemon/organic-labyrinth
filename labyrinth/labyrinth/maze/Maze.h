@@ -36,8 +36,8 @@ public:
     // returns the split threshold
     double getSplitThreshold() const;
 
-    // returns the new point sets after an epoch
-    std::vector<LineLoop> calcEpoch() const;
+    // returns the number of points
+    int getNumPoints() const;
 
     // sets the delta function
     void setDelta(std::function<double(const Point&)> delta);
@@ -55,11 +55,18 @@ public:
     double getAvgDistance() const;
 
 private:
+    // returns the new point sets after an epoch
+    void calcEpoch();
+
+
     // the forces that act on each particle each tick
     std::vector<std::pair<forces:: Force*, std::function<double(const Point&)>>> forces;
 
     // all of the points
     std::vector<LineLoop> loops;
+
+    // copy of loops for `applyForces()`
+    std::vector<LineLoop> copy;
 
     // the delta function
     std::function<double(const Point&)> delta;
@@ -67,6 +74,7 @@ private:
     // merge and split thresholds
     double mergeThreshold, splitThreshold;
 
+    // last result of `getAvgDistance()`
     mutable double avgDist;
 };
 }

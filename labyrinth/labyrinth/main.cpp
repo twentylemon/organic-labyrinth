@@ -6,6 +6,10 @@ using namespace maze;
 
 Maze laby = makeMaze();
 
+double XMIN, XMAX, YMIN, YMAX;
+
+int it = 0;
+
 // displays all of the line loops in the maze given
 void displayMaze(const Maze& maze) {
     std::vector<LineLoop> loops = maze.getLoops();
@@ -22,41 +26,51 @@ void displayMaze(const Maze& maze) {
 
 // glut display func, displays the maze at each step
 void displayFunc() {
+    glMatrixMode(GL_PROJECTION | GL_MATRIX_MODE);
+    glLoadIdentity();
+    glOrtho(XMIN, XMAX, YMIN, YMAX, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLineWidth(3.0);
     glColor3b(0, 0, 0);
+
+    laby.applyForces();
+    getBounds(laby, XMIN, XMAX, YMIN, YMAX);
+    std::cout << "it: " << (++it) << ", " << laby.getNumPoints() << " points "
+        << "(" << XMIN << "," << YMIN << ") --> (" << XMAX << "," << YMAX << ")"
+        << std::endl;
+
     displayMaze(laby);
     glFlush();
+    glutSwapBuffers();
 }
 
-// timer function, apply forces each step
-void timerFunc(int i) {
-    laby.applyForces();
-    glutPostRedisplay();
-    glutTimerFunc(0, timerFunc, i+1);
-    std::cout << laby.getLoops().front().size() << std::endl;
+// on key press, exit and save file
+void keyboardFunc(unsigned char key, int x, int y) {
+    glutLeaveMainLoop();
+    std::cout << "leaving main loop, writing svg...";
     std::ofstream out("../../output.svg");
-    writeSvg(out, laby);
+    writeSvg(out, laby, XMIN, XMAX, YMIN, YMAX);
     out.close();
+    std::cout << "done!" << std::endl;
 }
 
 
 int main(int argc, char** argv) {
-    int width = 300, height = 300;
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_RGBA | GLUT_SINGLE | GLUT_DEPTH);
-    glutInitWindowSize(width, height);
+    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+    glutInitWindowSize(600, 600);
     glutInitWindowPosition(30, 30);
     glutCreateWindow("organic labyrinth");
-
+    
+    getBounds(laby, XMIN, XMAX, YMIN, YMAX);
     glClearColor(1, 1, 1, 1);
     glMatrixMode(GL_PROJECTION | GL_MATRIX_MODE);
     glLoadIdentity();
-    glEnable(GL_DEPTH_TEST);
-    glOrtho(-width/2, width/2, height/2, -height/2, 0, 1);
-
+    glOrtho(XMIN, XMAX, YMIN, YMAX, 0, 1);
+    
     glutDisplayFunc(displayFunc);
-    glutTimerFunc(1000, timerFunc, 0);
+    glutIdleFunc(displayFunc);
+    glutKeyboardFunc(keyboardFunc);
 
     glutMainLoop();
     return 0;

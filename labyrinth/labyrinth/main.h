@@ -9,3 +9,5 @@
 #include "util.h"
 
 extern maze::Maze laby;
+
+extern double XMIN, XMAX, YMIN, YMAX;

@@ -23,13 +23,15 @@ Maze makeMaze(int whichOne) {
     double D = 0.0;
     switch (whichOne) {
     case 1:
-        laby.addLoop(getCircle(Point::ORIGIN, 100.0, 10));
+        laby.addLoop(getCircle(Point::ORIGIN, 100.0, 42));
+        //laby.addLoop(getCircle(Point(25, 25), 25, 50));
+        //laby.addLoop(getCircle(Point(-25, -25), 25, 50));
         D = laby.getAvgDistance();
         std::cout << "D = " << D << std::endl;
-        laby.addForce(new BrownianMotion(1), [](const Point&){ return 3; });
-        laby.addForce(new Fairing(), [](const Point&){ return 0.25; });
+        laby.addForce(new BrownianMotion(1), [](const Point&){ return 2; });
+        laby.addForce(new Fairing(), [](const Point&){ return 1; });
         laby.addForce(new LennardJones(D, 2, 2*D, 5*D), [](const Point&){ return 1; });
-        laby.setSplitThreshold(1.25*D);
+        laby.setSplitThreshold(1.3*D);
         laby.setMergeThreshold(0.25*D);
         break;
 
@@ -40,22 +42,30 @@ Maze makeMaze(int whichOne) {
 }
 
 
-void writeSvg(std::ostream& out, const Maze& laby) {
-    double xmin = 10E100, xmax = -10E100, ymin = 10E100, ymax = -10E100;
+void getBounds(const maze::Maze& laby, double& xmin, double& xmax, double& ymin, double& ymax) {
+    xmin = ymin = std::numeric_limits<double>::max();
+    xmax = ymax = std::numeric_limits<double>::min();
     std::for_each(laby.getLoops().begin(), laby.getLoops().end(), [&xmin,&xmax,&ymin,&ymax](const LineLoop& loop){
-        xmin = std::min((*std::min_element(loop.begin(), loop.end(), [](const Point& p1, const Point& p2){
+        auto x = std::minmax_element(loop.begin(), loop.end(), [](const Point& p1, const Point& p2){
             return p1.getX() < p2.getX();
-        })).getX(), xmin);
-        xmax = std::max((*std::max_element(loop.begin(), loop.end(), [](const Point& p1, const Point& p2){
-            return p1.getX() < p2.getX();
-        })).getX(), xmax);
-        ymin = std::min((*std::min_element(loop.begin(), loop.end(), [](const Point& p1, const Point& p2){
+        });
+        auto y = std::minmax_element(loop.begin(), loop.end(), [](const Point& p1, const Point& p2){
             return p1.getY() < p2.getY();
-        })).getY(), ymin);
-        ymax = std::max((*std::max_element(loop.begin(), loop.end(), [](const Point& p1, const Point& p2){
-            return p1.getY() < p2.getY();
-        })).getY(), ymax);
+        });
+        xmin = std::min(x.first->getX(), xmin);
+        xmax = std::max(x.second->getX(), xmax);
+        ymin = std::min(y.first->getY(), ymin);
+        ymax = std::max(y.second->getY(), ymax);
     });
+}
+
+void writeSvg(std::ostream& out, const Maze& laby) {
+    double xmin, xmax, ymin, ymax;
+    getBounds(laby, xmin, xmax, ymin, ymax);
+    writeSvg(out, laby, xmin, xmax, ymin, ymax);
+}
+
+void writeSvg(std::ostream& out, const Maze& laby, double xmin, double xmax, double ymin, double ymax) {
     double width = xmax - xmin;
     double height = ymax - ymin;
     out << "<?xml version=\"1.0\"?>" << std::endl

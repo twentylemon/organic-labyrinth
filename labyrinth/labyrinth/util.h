@@ -17,5 +17,9 @@ maze::LineLoop getCircle(const maze::Point& center, double radius, unsigned numP
 // returns the maze to use
 maze::Maze makeMaze(int whichOne = 1);
 
+// writes the bounds of the maze into the parameters given
+void getBounds(const maze::Maze& laby, double& xmin, double& xmax, double& ymin, double& ymax);
+
 // writes out the maze?
 void writeSvg(std::ostream& out, const maze::Maze& laby);
+void writeSvg(std::ostream& out, const maze::Maze& laby, double xmin, double xmax, double ymin, double ymax);

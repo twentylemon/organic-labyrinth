@@ -28,6 +28,7 @@ void Maze::addForce(Force* force, std::function<double(const Point&)> field) {
 
 void Maze::addLoop(const LineLoop& loop) {
     loops.emplace_back(loop);
+    copy.emplace_back(loop);
 }
 
 double Maze::getMergeThreshold() const {
@@ -36,6 +37,14 @@ double Maze::getMergeThreshold() const {
 
 double Maze::getSplitThreshold() const {
     return splitThreshold;
+}
+
+int Maze::getNumPoints() const {
+    int sum = 0;
+    std::for_each(loops.begin(), loops.end(), [&sum](const LineLoop& loop){
+        sum += loop.size();
+    });
+    return sum;
 }
 
 void Maze::setDelta(std::function<double(const Point&)> delta) {
@@ -68,23 +77,19 @@ double Maze::getAvgDistance() const {
 }
 
 
-std::vector<LineLoop> Maze::calcEpoch() const {
-    std::vector<LineLoop> copy = loops;
+void Maze::calcEpoch() {
     // apply the forces
     std::for_each(forces.begin(), forces.end(), [&](std::pair<Force*,std::function<double(const Point&)>> forcePair){
         for (unsigned i = 0; i < loops.size(); i++) {
             for (unsigned j = 0; j < loops[i].size(); j++) {
                 Point act = forcePair.first->act(loops, i, j, delta).scale(forcePair.second(loops[i][j]));
-                double max = avgDist / 3;
+                double max = avgDist / (forces.size() + loops.size() - 1);
                 if (act.magnitude() > max) {
                     act = act.normalize(max);
                 }
-                //std::cout << std::string(typeid(*forcePair.first).name()).substr(20) << ": " << act.toString() << std::endl;
                 copy[i][j] += act;
-                //copy[i][j] += forcePair.first->act(loops, i, j, delta).scale(forcePair.second(loops[i][j]));
             }
         }
-        //system("pause");
     });
 
     // split/merge points if they fall in their threshold values
@@ -101,10 +106,10 @@ std::vector<LineLoop> Maze::calcEpoch() const {
             }
         }
     }
-    return copy;
 }
 
 void Maze::applyForces() {
-    loops = calcEpoch();
+    calcEpoch();
+    loops = copy;
 }
 }
