@@ -22,6 +22,12 @@ public:
     // merges the point `lost` into `merged`
     void merge(int merged, int lost);
 
+    // returns true to use curves
+    bool useCurve() const;
+
+    // sets whether or not to use curves
+    void setCurve(bool curve);
+
     // returns the point in the loop at the given index, the index is automatically cyclicized
     Point& at(int idx);
     const Point& at(int idx) const;
@@ -37,6 +43,9 @@ public:
 private:
     // returns the cyclic index of `idx`
     int get_idx(int idx) const;
+
+    // to loop or straight line when `<<`
+    bool curve;
 };
 }
 #endif

@@ -4,7 +4,8 @@
 
 namespace maze {
 
-LineLoop::LineLoop()
+LineLoop::LineLoop() :
+    curve(false)
 {
 }
 
@@ -15,10 +16,12 @@ void LineLoop::split(int pt1, int pt2) {
 }
 
 void LineLoop::merge(int merged, int lost) {
-    merged = get_idx(merged);
-    lost = get_idx(lost);
-    std::vector<Point>::at(merged) = std::vector<Point>::at(merged).avgBetween(std::vector<Point>::at(lost));
-    erase(begin() + lost);
+    if (size() > 3) {
+        merged = get_idx(merged);
+        lost = get_idx(lost);
+        std::vector<Point>::at(merged) = std::vector<Point>::at(merged).avgBetween(std::vector<Point>::at(lost));
+        erase(begin() + lost);
+    }
 }
 
 int LineLoop::get_idx(int idx) const {
@@ -48,13 +51,29 @@ int LineLoop::neighbours(int pt1, int pt2) const {
     return std::min(std::abs(pt2-pt1), std::min(pt1,pt2)-std::max(pt1,pt2)+(int)size());
 }
 
+
+
+bool LineLoop::useCurve() const {
+    return curve;
+}
+
+void LineLoop::setCurve(bool curve) {
+    this->curve = curve;
+}
+
 std::ostream& operator<<(std::ostream& out, const LineLoop& loop) {
-    for (unsigned i = 0; i < loop.size(); i++) {
-        out << "<line x1=\"" << loop[i].getX() << "\" y1=\"" << loop[i].getY() << "\""
-            << " x2=\"" << loop[i+1].getX() << "\" y2=\"" << loop[i+1].getY() << "\""
-            << " style=\"stroke:black;stroke-width:3;\"/>"
-            << std::endl;
+    out << "<path fill=\"transparent\" stroke=\"black\" d=\"M " << loop[0].getX() << " " << loop[0].getY();
+    if (loop.useCurve()) {
+        for (unsigned i = 1; i < loop.size(); i+=2) {
+            out << " Q" << loop[i].getX() << " " << loop[i].getY() << ", " << loop[i+1].getX() << " " << loop[i+1].getY();
+        }
     }
+    else {
+        for (unsigned i = 1; i < loop.size(); i++) {
+            out << " L" << loop[i].getX() << " " << loop[i].getY();
+        }
+    }
+    out << " Z\"/>" << std::endl;
     return out;
 }
 }

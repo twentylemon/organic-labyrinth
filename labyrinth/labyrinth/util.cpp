@@ -17,21 +17,53 @@ LineLoop getCircle(const Point& center, double radius, unsigned numPoints) {
     return loop;
 }
 
+LineLoop getSquare(const Point& center, double sideLength, unsigned numPointsPerSide) {
+    LineLoop loop;
+    auto off = [sideLength,numPointsPerSide](unsigned i){ return sideLength*(double)i/numPointsPerSide; };
+    for (unsigned i = 0; i < numPointsPerSide; i++) {
+        loop.emplace_back(center + Point(sideLength/2, sideLength/2 - off(i)));
+    }
+    for (unsigned i = 0; i < numPointsPerSide; i++) {
+        loop.emplace_back(center + Point(sideLength/2 - off(i), -sideLength/2));
+    }
+    for (unsigned i = 0; i < numPointsPerSide; i++) {
+        loop.emplace_back(center + Point(-sideLength/2, -sideLength/2 + off(i)));
+    }
+    for (unsigned i = 0; i < numPointsPerSide; i++) {
+        loop.emplace_back(center + Point(-sideLength/2 + off(i), sideLength/2));
+    }
+    return loop;
+}
+
+LineLoop getBoundingBox(const Point& center, double sideLength, unsigned numPointsPerSide) {
+    LineLoop loop = getSquare(center, sideLength, numPointsPerSide);
+    for (unsigned i = 0; i < loop.size(); i++) {
+        loop[i].setLocked(true);
+    }
+    return loop;
+}
+
 
 Maze makeMaze(int whichOne) {
     Maze laby;
+    LineLoop c;
     double D = 0.0;
     switch (whichOne) {
     case 1:
-        laby.addLoop(getCircle(Point::ORIGIN, 100.0, 42));
+        c = getCircle(Point(200, 0), 100, 50);
+        c.setCurve(true);
+        laby.addLoop(c);
+        laby.addLoop(getCircle(Point(-200, 0), 100.0, 50));
+        laby.addLoop(getBoundingBox(Point::ORIGIN, 800, 50));
         //laby.addLoop(getCircle(Point(25, 25), 25, 50));
         //laby.addLoop(getCircle(Point(-25, -25), 25, 50));
+        //laby.addLoop(getCircle(Point(200,0), 100.0, 50));
         D = laby.getAvgDistance();
         std::cout << "D = " << D << std::endl;
         laby.addForce(new BrownianMotion(1), [](const Point&){ return 2; });
-        laby.addForce(new Fairing(), [](const Point&){ return 1; });
+        laby.addForce(new Fairing(), [](const Point&){ return 0.25; });
         laby.addForce(new LennardJones(D, 2, 2*D, 5*D), [](const Point&){ return 1; });
-        laby.setSplitThreshold(1.3*D);
+        laby.setSplitThreshold(1.4*D);
         laby.setMergeThreshold(0.25*D);
         break;
 
@@ -42,7 +74,7 @@ Maze makeMaze(int whichOne) {
 }
 
 
-void getBounds(const maze::Maze& laby, double& xmin, double& xmax, double& ymin, double& ymax) {
+void getBounds(const Maze& laby, double& xmin, double& xmax, double& ymin, double& ymax) {
     xmin = ymin = std::numeric_limits<double>::max();
     xmax = ymax = std::numeric_limits<double>::min();
     std::for_each(laby.getLoops().begin(), laby.getLoops().end(), [&xmin,&xmax,&ymin,&ymax](const LineLoop& loop){

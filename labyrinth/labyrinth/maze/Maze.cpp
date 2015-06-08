@@ -79,15 +79,17 @@ double Maze::getAvgDistance() const {
 
 void Maze::calcEpoch() {
     // apply the forces
-    std::for_each(forces.begin(), forces.end(), [&](std::pair<Force*,std::function<double(const Point&)>> forcePair){
+    const double max = avgDist / (forces.size() + loops.size() - 1);
+    std::for_each(forces.begin(), forces.end(), [this,max](std::pair<Force*,std::function<double(const Point&)>> forcePair){
         for (unsigned i = 0; i < loops.size(); i++) {
             for (unsigned j = 0; j < loops[i].size(); j++) {
-                Point act = forcePair.first->act(loops, i, j, delta).scale(forcePair.second(loops[i][j]));
-                double max = avgDist / (forces.size() + loops.size() - 1);
-                if (act.magnitude() > max) {
-                    act = act.normalize(max);
+                if (!loops[i][j].isLocked()) {
+                    Point act = forcePair.first->act(loops, i, j, delta).scale(forcePair.second(loops[i][j]));
+                    if (act.magnitude() > max) {
+                        act = act.normalize(max);
+                    }
+                    copy[i][j] += act;
                 }
-                copy[i][j] += act;
             }
         }
     });
@@ -95,14 +97,16 @@ void Maze::calcEpoch() {
     // split/merge points if they fall in their threshold values
     for (unsigned i = 0; i < copy.size(); i++) {
         for (unsigned j = 0; j < copy[i].size(); j++) {
-            double distance = copy[i][j].distance(copy[i][j+1]);
-            if (distance > getSplitThreshold()) {
-                copy[i].split(j, j+1);
-                j++;    // skip checking the newly created point
-            }
-            else if (distance < getMergeThreshold()) {
-                copy[i].merge(j, j+1);
-                //j--;  // check the next point as well? likely not required
+            if (!copy[i][j].isLocked() && !copy[i][j+1].isLocked()) {
+                double distance = copy[i][j].distance(copy[i][j+1]);
+                if (distance > getSplitThreshold()) {
+                    copy[i].split(j, j+1);
+                    j++;    // skip checking the newly created point
+                }
+                else if (distance < getMergeThreshold()) {
+                    copy[i].merge(j, j+1);
+                    //j--;  // check the next point as well? likely not required
+                }
             }
         }
     }

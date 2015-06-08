@@ -33,15 +33,18 @@ void displayFunc() {
     glLineWidth(3.0);
     glColor3b(0, 0, 0);
 
-    laby.applyForces();
+    if (it > 0) {
+        laby.applyForces();
+    }
     getBounds(laby, XMIN, XMAX, YMIN, YMAX);
-    std::cout << "it: " << (++it) << ", " << laby.getNumPoints() << " points "
+    std::cout << "it: " << (it++) << ", " << laby.getNumPoints() << " points "
         << "(" << XMIN << "," << YMIN << ") --> (" << XMAX << "," << YMAX << ")"
         << std::endl;
 
     displayMaze(laby);
     glFlush();
     glutSwapBuffers();
+    //system("pause");
 }
 
 // on key press, exit and save file

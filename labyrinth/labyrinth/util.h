@@ -11,8 +11,10 @@
 #include "maze/forces/LennardJones.h"
 #include "maze/forces/Morse.h"
 
-// returns a lineloop that is a circle with the parameters given
+// returns a lineloop of the given shape
 maze::LineLoop getCircle(const maze::Point& center, double radius, unsigned numPoints);
+maze::LineLoop getSquare(const maze::Point& center, double sideLength, unsigned numPointsPerSide);
+maze::LineLoop getBoundingBox(const maze::Point& center, double sideLength, unsigned numPointsPerSide);
 
 // returns the maze to use
 maze::Maze makeMaze(int whichOne = 1);
