@@ -5,7 +5,8 @@
 namespace maze {
     namespace forces {
 
-BrownianMotion::BrownianMotion(double dist) :
+BrownianMotion::BrownianMotion(double maxMag, double dist) :
+    Force(maxMag),
     dist(dist),
     guassian(std::normal_distribution<double>())
 {
@@ -14,7 +15,8 @@ BrownianMotion::BrownianMotion(double dist) :
 #endif
 }
     
-BrownianMotion::BrownianMotion(double dist, double mean, double stddev) :
+BrownianMotion::BrownianMotion(double maxMag, double dist, double mean, double stddev) :
+    Force(maxMag),
     dist(dist),
     guassian(std::normal_distribution<double>(mean, stddev))
 {

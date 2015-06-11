@@ -8,6 +8,28 @@
 
 #include "util.h"
 
-extern maze::Maze laby;
+typedef struct glob {
+    int it;             // iteration count
+    maze::Maze laby;    // the maze
+    double XMIN, XMAX, YMIN, YMAX;  // extends of the maze
+    
+    int window;
+    bool paused;
+    bool step;
 
-extern double XMIN, XMAX, YMIN, YMAX;
+    int windowSize;
+
+    bool editMode;
+    bool lockPoint;
+    double minDistance;
+} Global;
+
+extern Global g;
+
+
+void displayFunc();
+
+// menu.cpp
+void keyboardFunc(unsigned char key, int x, int y);
+void mouseFunc(int button, int state, int x, int y);
+void motionFunc(int x, int y);

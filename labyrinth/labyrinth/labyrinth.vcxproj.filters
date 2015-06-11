@@ -57,6 +57,12 @@
     <ClCompile Include="util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="menu.cpp">
+      <Filter>Source Files\maze</Filter>
+    </ClCompile>
+    <ClCompile Include="maze\forces\Force.cpp">
+      <Filter>Source Files\maze\forces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">

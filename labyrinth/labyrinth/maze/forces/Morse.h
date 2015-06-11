@@ -13,7 +13,7 @@ namespace maze {
 class Morse : public AttractionForce
 {
 public:
-    Morse(double dist, int nMin, double zeroPoint, double clampPoint);
+    Morse(double maxMag, double dist, int nMin, double zeroPoint, double clampPoint);
 
     // returns the potential value at distance r
     virtual double potential(double r) const;

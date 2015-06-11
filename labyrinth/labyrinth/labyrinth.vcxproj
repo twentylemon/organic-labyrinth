@@ -65,6 +65,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="maze\forces\Force.cpp" />
+    <ClCompile Include="menu.cpp" />
     <ClCompile Include="util.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="maze\forces\AttractionForce.cpp" />

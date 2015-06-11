@@ -4,22 +4,23 @@
 
 using namespace maze;
 
-Maze laby = makeMaze();
+Global g;
 
-double XMIN, XMAX, YMIN, YMAX;
-
-int it = 0;
+int MAZE_DEFAULT = 1;
+int MAZE_COMPARE = 2;
 
 // displays all of the line loops in the maze given
 void displayMaze(const Maze& maze) {
     std::vector<LineLoop> loops = maze.getLoops();
     std::for_each(loops.begin(), loops.end(), [](const LineLoop& loop){
-        glBegin(GL_LINE_LOOP);
-        std::for_each(loop.begin(), loop.end(), [](const Point& point){
-            glVertex2d(point.getX(), point.getY());
-        });
-        glVertex2d(loop.front().getX(), loop.front().getY());
-        glEnd();
+        if (!loop.empty()) {
+            glBegin(GL_LINE_LOOP);
+            std::for_each(loop.begin(), loop.end(), [](const Point& point){
+                glVertex2d(point.getX(), point.getY());
+            });
+            glVertex2d(loop.front().getX(), loop.front().getY());
+            glEnd();
+        }
     });
 }
 
@@ -28,52 +29,57 @@ void displayMaze(const Maze& maze) {
 void displayFunc() {
     glMatrixMode(GL_PROJECTION | GL_MATRIX_MODE);
     glLoadIdentity();
-    glOrtho(XMIN, XMAX, YMIN, YMAX, 0, 1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLineWidth(3.0);
-    glColor3b(0, 0, 0);
 
-    if (it > 0) {
-        laby.applyForces();
+    if (!g.paused || g.step) {
+        g.laby.applyForces();
+        g.it++;
     }
-    getBounds(laby, XMIN, XMAX, YMIN, YMAX);
-    std::cout << "it: " << (it++) << ", " << laby.getNumPoints() << " points "
-        << "(" << XMIN << "," << YMIN << ") --> (" << XMAX << "," << YMAX << ")"
-        << std::endl;
+    getBounds(g.laby, g.XMIN, g.XMAX, g.YMIN, g.YMAX);
+    glOrtho(g.XMIN, g.XMAX, g.YMIN, g.YMAX, 0, 1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    displayMaze(g.laby);
+    if (g.step) {
+        keyboardFunc('i', 0, 0);
+        g.step = false;
+    }
 
-    displayMaze(laby);
     glFlush();
     glutSwapBuffers();
-    //system("pause");
-}
-
-// on key press, exit and save file
-void keyboardFunc(unsigned char key, int x, int y) {
-    glutLeaveMainLoop();
-    std::cout << "leaving main loop, writing svg...";
-    std::ofstream out("../../output.svg");
-    writeSvg(out, laby, XMIN, XMAX, YMIN, YMAX);
-    out.close();
-    std::cout << "done!" << std::endl;
 }
 
 
 int main(int argc, char** argv) {
+    g.windowSize = 600;
+
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
-    glutInitWindowSize(600, 600);
+    glutInitWindowSize(g.windowSize, g.windowSize);
     glutInitWindowPosition(30, 30);
-    glutCreateWindow("organic labyrinth");
-    
-    getBounds(laby, XMIN, XMAX, YMIN, YMAX);
+    g.window = glutCreateWindow("organic labyrinth");
+
+    g.editMode = false;
+    g.lockPoint = false;
+    g.minDistance = 8.0;
+
+    g.paused = true;
+    g.step = false;
+    g.it = 0;
+    g.laby = makeMaze(MAZE_COMPARE);
+    getBounds(g.laby, g.XMIN, g.XMAX, g.YMIN, g.YMAX);
+
     glClearColor(1, 1, 1, 1);
+    glColor3b(0, 0, 0);
+    glLineWidth(3.0);
+
     glMatrixMode(GL_PROJECTION | GL_MATRIX_MODE);
     glLoadIdentity();
-    glOrtho(XMIN, XMAX, YMIN, YMAX, 0, 1);
+    glOrtho(g.XMIN, g.XMAX, g.YMIN, g.YMAX, 0, 1);
     
     glutDisplayFunc(displayFunc);
     glutIdleFunc(displayFunc);
     glutKeyboardFunc(keyboardFunc);
+    //glutMouseFunc(mouseFunc);
+    glutMotionFunc(motionFunc);
 
     glutMainLoop();
     return 0;

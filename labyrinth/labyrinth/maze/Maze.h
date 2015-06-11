@@ -49,10 +49,14 @@ public:
     void setSplitThreshold(double splitThreshold);
 
     // returns all the points in the maze
+    std::vector<LineLoop>& getLoops();
     const std::vector<LineLoop>& getLoops() const;
 
     // returns D - the average distance between points
     double getAvgDistance() const;
+
+    void addToLast(double x, double y, bool lock);
+    void addToLast(const Point& point);
 
 private:
     // returns the new point sets after an epoch
@@ -73,9 +77,6 @@ private:
 
     // merge and split thresholds
     double mergeThreshold, splitThreshold;
-
-    // last result of `getAvgDistance()`
-    mutable double avgDist;
 };
 }
 #endif

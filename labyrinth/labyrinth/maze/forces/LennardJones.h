@@ -13,7 +13,7 @@ namespace maze {
 class LennardJones : public AttractionForce
 {
 public:
-    LennardJones(double dist, int nMin, double zeroPoint, double clampPoint);
+    LennardJones(double maxMag, double dist, int nMin, double zeroPoint, double clampPoint);
 
     // returns the potential value at distance r
     virtual double potential(double r) const;

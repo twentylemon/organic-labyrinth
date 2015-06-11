@@ -59,35 +59,48 @@ void Maze::setSplitThreshold(double splitThreshold) {
     this->splitThreshold = splitThreshold;
 }
 
+std::vector<LineLoop>& Maze::getLoops() {
+    return loops;
+}
+
 const std::vector<LineLoop>& Maze::getLoops() const {
     return loops;
 }
 
+void Maze::addToLast(double x, double y, bool lock) {
+    loops.back().emplace_back(x, y, lock);
+    copy.back().emplace_back(x, y, lock);
+}
+
+void Maze::addToLast(const Point& point) {
+    loops.back().emplace_back(point);
+    copy.back().emplace_back(point);
+}
+
 double Maze::getAvgDistance() const {
-    avgDist = 0.0;
+    double avgDist = 0.0;
     int num = 0;
     for (unsigned i = 0; i < loops.size(); i++) {
+        if (std::all_of(loops[i].begin(), loops[i].end(), [](const Point& point){ return point.isLocked(); })){
+            continue;
+        }
         num += loops[i].size();
         for (unsigned j = 0; j < loops[i].size(); j++) {
             avgDist += loops[i][j].distance(loops[i][j+1]);
         }
     }
-    avgDist = avgDist / num;
-    return avgDist;
+    return avgDist / num;
 }
 
 
 void Maze::calcEpoch() {
     // apply the forces
-    const double max = avgDist / (forces.size() + loops.size() - 1);
-    std::for_each(forces.begin(), forces.end(), [this,max](std::pair<Force*,std::function<double(const Point&)>> forcePair){
+    std::for_each(forces.begin(), forces.end(), [this](std::pair<Force*,std::function<double(const Point&)>> forcePair){
         for (unsigned i = 0; i < loops.size(); i++) {
             for (unsigned j = 0; j < loops[i].size(); j++) {
                 if (!loops[i][j].isLocked()) {
                     Point act = forcePair.first->act(loops, i, j, delta).scale(forcePair.second(loops[i][j]));
-                    if (act.magnitude() > max) {
-                        act = act.normalize(max);
-                    }
+                    act = forcePair.first->scaleToFit(act.scale(delta(loops[i][j])));
                     copy[i][j] += act;
                 }
             }
@@ -99,11 +112,11 @@ void Maze::calcEpoch() {
         for (unsigned j = 0; j < copy[i].size(); j++) {
             if (!copy[i][j].isLocked() && !copy[i][j+1].isLocked()) {
                 double distance = copy[i][j].distance(copy[i][j+1]);
-                if (distance > getSplitThreshold()) {
+                if (distance > getSplitThreshold()*(delta(copy[i][j])+delta(copy[i][j+1]))/2.0) {
                     copy[i].split(j, j+1);
                     j++;    // skip checking the newly created point
                 }
-                else if (distance < getMergeThreshold()) {
+                else if (distance < getMergeThreshold()*(delta(copy[i][j])+delta(copy[i][j+1]))/2.0) {
                     copy[i].merge(j, j+1);
                     //j--;  // check the next point as well? likely not required
                 }

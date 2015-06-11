@@ -12,7 +12,7 @@ namespace maze {
 class Fairing : public Force
 {
 public:
-    Fairing();
+    Fairing(double maxMag);
 
     // returns the displacement vector that the point `loops[loopIdx][pointIdx]` feels
     // given all the other points in it's loop and all the other points

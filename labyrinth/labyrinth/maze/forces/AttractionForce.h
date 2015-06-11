@@ -12,7 +12,7 @@ namespace maze {
 class AttractionForce : public Force
 {
 public:
-    AttractionForce(double dist, int nMin, double zeroPoint, double clampPoint);
+    AttractionForce(double maxMag, double dist, int nMin, double zeroPoint, double clampPoint);
 
     // average starting distances to each other point
     double getDist() const;

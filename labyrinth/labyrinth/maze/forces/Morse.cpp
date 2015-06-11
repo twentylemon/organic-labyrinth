@@ -5,8 +5,8 @@
 namespace maze {
     namespace forces {
 
-Morse::Morse(double dist, int nMin, double zeroPoint, double clampPoint) :
-    AttractionForce(dist, nMin, zeroPoint, clampPoint)
+Morse::Morse(double maxMag, double dist, int nMin, double zeroPoint, double clampPoint) :
+    AttractionForce(maxMag, dist, nMin, zeroPoint, clampPoint)
 {
 }
 

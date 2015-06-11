@@ -4,7 +4,8 @@
 namespace maze {
     namespace forces {
 
-AttractionForce::AttractionForce(double dist, int nMin, double zeroPoint, double clampPoint) :
+AttractionForce::AttractionForce(double maxMag, double dist, int nMin, double zeroPoint, double clampPoint) :
+    Force(maxMag),
     dist(dist),
     nMin(nMin),
     zeroPoint(zeroPoint),
@@ -45,18 +46,17 @@ void AttractionForce::setClampPoint(double clampPoint) {
 }
 
 Point AttractionForce::act(const std::vector<LineLoop>& loops, int loopIdx, int pointIdx, std::function<double(const Point&)> delta) const {
-    double sumX = 0.0, sumY = 0.0;
     Point force = Point(0, 0);
-    double d = getDist() * delta(loops[loopIdx][pointIdx]);
+    double d = delta(loops[loopIdx][pointIdx]);
     for (int i = 0; i < (int)loops.size(); i++) {
         for (int j = 0; j < (int)loops[i].size(); j++) {
             // only consider points not on our loop, or those further than nMin points away from us
             if (i != loopIdx || loops[i].neighbours(pointIdx, j) > getNMin()) {
                 const Point x = loops[loopIdx][pointIdx].closestOnSegment(loops[i][j], loops[i][j+1]);
-                const Point p = loops[loopIdx][pointIdx] - x;
+                const Point f = loops[loopIdx][pointIdx] - x;
                 // ignore if beyond the clamp distance
-                if (p.magnitude() < getClampPoint()*std::min(d/getDist(), delta(x))){
-                    force += p.scale(potential(p.magnitude()/* / d*/) / p.magnitude());
+                if (f.magnitude() < getClampPoint()*std::min(d, delta(x))){
+                    force += f.scale(potential(f.magnitude() / d) / f.magnitude());
                 }
             }
         }

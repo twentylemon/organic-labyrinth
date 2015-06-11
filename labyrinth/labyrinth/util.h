@@ -12,9 +12,9 @@
 #include "maze/forces/Morse.h"
 
 // returns a lineloop of the given shape
-maze::LineLoop getCircle(const maze::Point& center, double radius, unsigned numPoints);
-maze::LineLoop getSquare(const maze::Point& center, double sideLength, unsigned numPointsPerSide);
-maze::LineLoop getBoundingBox(const maze::Point& center, double sideLength, unsigned numPointsPerSide);
+maze::LineLoop getCircle(const maze::Point& center, double radius, unsigned numPoints, bool curve = false);
+maze::LineLoop getSquare(const maze::Point& center, double sideLength, unsigned numPointsPerSide, bool curve = false);
+maze::LineLoop getBoundingBox(const maze::Point& center, double sideLength, unsigned numPointsPerSide, bool curve = false);
 
 // returns the maze to use
 maze::Maze makeMaze(int whichOne = 1);

@@ -5,7 +5,8 @@
 namespace maze {
     namespace forces {
 
-Fairing::Fairing()
+Fairing::Fairing(double maxMag) :
+    Force(maxMag)
 {
 }
 
@@ -15,7 +16,7 @@ Point Fairing::act(const std::vector<LineLoop>& loops, int loopIdx, int pointIdx
     Point pj = loops[loopIdx][pointIdx+1];
     double dpi = delta(pi);
     double dpj = delta(pj);
-    return (pi.scale(dpi / (dpi + dpj)) + pj.scale(dpj / (dpi + dpj))) - loops[loopIdx][pointIdx];
+    return (pi.scale(dpj) + pj.scale(dpi)).scale(1/(dpi+dpj)) - loops[loopIdx][pointIdx];
 }
 
     }

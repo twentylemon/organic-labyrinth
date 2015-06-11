@@ -15,10 +15,10 @@ class BrownianMotion : public Force
 {
 public:
     // sets the guassian parameters to mean of 0, stddev of 1
-    BrownianMotion(double dist);
+    BrownianMotion(double maxMag, double dist);
     
     // sets the guassian parameters to those given
-    BrownianMotion(double dist, double mean, double stddev);
+    BrownianMotion(double maxMag, double dist, double mean, double stddev);
 
     // average starting distances to each other point
     double getDist() const;
