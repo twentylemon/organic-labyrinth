@@ -8,6 +8,8 @@ Global g;
 
 int MAZE_DEFAULT = 1;
 int MAZE_COMPARE = 2;
+int MAZE_INSIDE = 3;
+int MAZE_DELTA = 4;
 
 // displays all of the line loops in the maze given
 void displayMaze(const Maze& maze) {
@@ -59,12 +61,13 @@ int main(int argc, char** argv) {
 
     g.editMode = false;
     g.lockPoint = false;
+    g.leftClicking = false;
     g.minDistance = 8.0;
 
     g.paused = true;
     g.step = false;
     g.it = 0;
-    g.laby = makeMaze(MAZE_COMPARE);
+    g.laby = makeMaze(6);
     getBounds(g.laby, g.XMIN, g.XMAX, g.YMIN, g.YMAX);
 
     glClearColor(1, 1, 1, 1);
@@ -78,8 +81,10 @@ int main(int argc, char** argv) {
     glutDisplayFunc(displayFunc);
     glutIdleFunc(displayFunc);
     glutKeyboardFunc(keyboardFunc);
-    //glutMouseFunc(mouseFunc);
+    glutMouseFunc(mouseFunc);
     glutMotionFunc(motionFunc);
+
+    keyboardFunc('t', 0, 0);
 
     glutMainLoop();
     return 0;

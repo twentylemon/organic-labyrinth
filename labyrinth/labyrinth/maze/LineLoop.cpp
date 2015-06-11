@@ -61,16 +61,21 @@ void LineLoop::setCurve(bool curve) {
     this->curve = curve;
 }
 
+bool LineLoop::allLocked() const {
+    return std::all_of(begin(), end(), [](const Point& point){ return point.isLocked(); });
+}
+
 std::ostream& operator<<(std::ostream& out, const LineLoop& loop) {
-    out << "<path fill=\"transparent\" stroke=\"black\" d=\"M " << loop[0].getX() << " " << loop[0].getY();
+    // negate the y to flip about x=0, view the image correctly
+    out << "<path fill=\"transparent\" stroke=\"black\" d=\"M " << loop[0].getX() << " " << -loop[0].getY();
     if (loop.useCurve()) {
         for (unsigned i = 1; i < loop.size(); i+=2) {
-            out << " Q" << loop[i].getX() << " " << loop[i].getY() << ", " << loop[i+1].getX() << " " << loop[i+1].getY();
+            out << " Q" << loop[i].getX() << " " << -loop[i].getY() << ", " << loop[i+1].getX() << " " << -loop[i+1].getY();
         }
     }
     else {
         for (unsigned i = 1; i < loop.size(); i++) {
-            out << " L" << loop[i].getX() << " " << loop[i].getY();
+            out << " L" << loop[i].getX() << " " << -loop[i].getY();
         }
     }
     out << " Z\"/>" << std::endl;

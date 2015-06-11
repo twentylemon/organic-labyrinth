@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <iostream>
+#include <algorithm>
 
 #include "Point.h"
 
@@ -27,6 +28,9 @@ public:
 
     // sets whether or not to use curves
     void setCurve(bool curve);
+
+    // returns true if all the points in the loop are locked
+    bool allLocked() const;
 
     // returns the point in the loop at the given index, the index is automatically cyclicized
     Point& at(int idx);

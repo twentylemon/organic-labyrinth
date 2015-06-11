@@ -55,8 +55,12 @@ public:
     // returns D - the average distance between points
     double getAvgDistance() const;
 
+    // adds the point to the last loop in the maze
     void addToLast(double x, double y, bool lock);
     void addToLast(const Point& point);
+
+    // flips the curvature of the last loop in the maze
+    void flipLastCurve();
 
 private:
     // returns the new point sets after an epoch

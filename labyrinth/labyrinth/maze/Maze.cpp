@@ -77,16 +77,20 @@ void Maze::addToLast(const Point& point) {
     copy.back().emplace_back(point);
 }
 
+void Maze::flipLastCurve() {
+    loops.back().setCurve(!loops.back().useCurve());
+    copy.back().setCurve(loops.back().useCurve());
+}
+
 double Maze::getAvgDistance() const {
     double avgDist = 0.0;
     int num = 0;
     for (unsigned i = 0; i < loops.size(); i++) {
-        if (std::all_of(loops[i].begin(), loops[i].end(), [](const Point& point){ return point.isLocked(); })){
-            continue;
-        }
-        num += loops[i].size();
-        for (unsigned j = 0; j < loops[i].size(); j++) {
-            avgDist += loops[i][j].distance(loops[i][j+1]);
+        if (!loops[i].allLocked()) {
+            num += loops[i].size();
+            for (unsigned j = 0; j < loops[i].size(); j++) {
+                avgDist += loops[i][j].distance(loops[i][j+1]);
+            }
         }
     }
     return avgDist / num;

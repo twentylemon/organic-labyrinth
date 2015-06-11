@@ -50,17 +50,18 @@ LineLoop getBoundingBox(const Point& center, double sideLength, unsigned numPoin
 Maze makeMaze(int whichOne) {
     Maze laby;
     double D = 0.0;
+    bool def = true;
     switch (whichOne) {
     case 1:
         laby.addLoop(getCircle(Point::ORIGIN, 100.0, 50, true));
         laby.addLoop(getBoundingBox(Point::ORIGIN, 300, 50));
         D = laby.getAvgDistance();
-        std::cout << "D = " << D << std::endl;
-        laby.addForce(new BrownianMotion(D/3, 1), [](const Point&){ return 2; });
-        laby.addForce(new Fairing(D/3), [](const Point&){ return 0.25; });
-        laby.addForce(new LennardJones(D/3, D, 2, 2*D, 5*D), [](const Point&){ return 1; });
+        laby.addForce(new BrownianMotion(D/1.5, 1));
+        laby.addForce(new Fairing(D/24));
+        laby.addForce(new Morse(D/3, D, 2, 2*D, 5*D));
         laby.setSplitThreshold(1.4*D);
         laby.setMergeThreshold(0.25*D);
+        def = false;
         break;
 
     case 2:
@@ -68,16 +69,58 @@ Maze makeMaze(int whichOne) {
         laby.addLoop(getCircle(Point(-200, 0), 100.0, 50, false));
         laby.addLoop(getBoundingBox(Point::ORIGIN, 800, 10));
         D = laby.getAvgDistance();
-        std::cout << "D = " << D << std::endl;
+        laby.addForce(new BrownianMotion(D/1.5, 1));
+        laby.addForce(new Fairing(D/24));
+        laby.addForce(new Morse(D/3, D, 2, 2*D, 5*D));
+        laby.setSplitThreshold(1.4*D);
+        laby.setMergeThreshold(0.25*D);
+        def = false;
+        break;
+
+    case 3:
+        laby.addLoop(getCircle(Point::ORIGIN, 50, 30, true));
+        laby.addLoop(getCircle(Point::ORIGIN, 300, 90, true));
+        laby.addLoop(getBoundingBox(Point::ORIGIN, 800, 10));
+        break;
+
+    case 4:
+        laby.setDelta([](const Point& point){
+            if (point.magnitude() < 100) {
+                return 1.0 - point.magnitude() / 250;
+            }
+            return 1.0;
+        });
+        laby.addLoop(getCircle(Point::ORIGIN, 100, 50, true));
+        laby.addLoop(getBoundingBox(Point::ORIGIN, 800, 10));
+        break;
+
+    case 5:
+        laby.addLoop(getCircle(Point::ORIGIN, 100.0, 100, true));
+        laby.addLoop(getBoundingBox(Point::ORIGIN, 300, 50));
+        D = laby.getAvgDistance();
+        laby.addForce(new BrownianMotion(D/1.5, 1), [](const Point& p){ return p.getX() < 0 ? 1.0/3.0 : 1.0; });
+        laby.addForce(new Fairing(D/24), [](const Point& p){ return p.getX() < 0 ? 1.0/3.0 : 1.0; });
+        laby.addForce(new LennardJones(D/3, D, 2, 2*D, 5*D), [](const Point& p){ return p.getX() < 0 ? 1.0/3.0 : 1.0; });
+        laby.setSplitThreshold(1.4*D);
+        laby.setMergeThreshold(0.25*D);
+        def = false;
+        break;
+
+    case 6:
+        laby.addLoop(getSquare(Point::ORIGIN, 100.0, 10, true));
+        break;
+
+
+    default:
+        laby.addLoop(getCircle(Point::ORIGIN, 100.0, 100));
+    }
+    if (def) {
+        D = laby.getAvgDistance();
         laby.addForce(new BrownianMotion(D/1.5, 1));
         laby.addForce(new Fairing(D/24));
         laby.addForce(new LennardJones(D/3, D, 2, 2*D, 5*D));
         laby.setSplitThreshold(1.4*D);
         laby.setMergeThreshold(0.25*D);
-        break;
-
-    default:
-        laby.addLoop(getCircle(Point::ORIGIN, 100.0, 100));
     }
     return laby;
 }
@@ -114,24 +157,13 @@ void writeSvg(std::ostream& out, const Maze& laby, double xmin, double xmax, dou
     out << "<?xml version=\"1.0\"?>" << std::endl
         << "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">" << std::endl
         << "<svg width=\"" << 600 << "\" height=\"" << 600 << "\" "
-        << "viewBox=\"" << xmin << " " << ymin << " " << width << " " << height << "\" "
+        << "viewBox=\"" << xmin << " " << -ymax << " " << width << " " << height << "\" "
         << "version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">" << std::endl;
 
-    auto flip = [](double y){ return -y; };
-    std::for_each(laby.getLoops().begin(), laby.getLoops().end(), [&out,flip](const LineLoop& loop) {
-        out << "<path fill=\"transparent\" stroke=\"black\" d=\"M " << loop[0].getX() << " " << flip(loop[0].getY());
-        if (loop.useCurve()) {
-            for (unsigned i = 1; i < loop.size(); i+=2) {
-                out << " Q" << loop[i].getX() << " " << flip(loop[i].getY()) << ", " << loop[i+1].getX() << " " << flip(loop[i+1].getY());
-            }
+    std::for_each(laby.getLoops().begin(), laby.getLoops().end(), [&out](const LineLoop& loop) {
+        if (!loop.allLocked()) {
+            out << loop;
         }
-        else {
-            for (unsigned i = 1; i < loop.size(); i++) {
-                out << " L" << loop[i].getX() << " " << flip(loop[i].getY());
-            }
-        }
-        out << " Z\"/>" << std::endl;
-        //out << loop;
     });
     out << "</svg>" << std::endl;
 }

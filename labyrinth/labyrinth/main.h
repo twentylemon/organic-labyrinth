@@ -22,6 +22,7 @@ typedef struct glob {
     bool editMode;
     bool lockPoint;
     double minDistance;
+    bool leftClicking;
 } Global;
 
 extern Global g;
