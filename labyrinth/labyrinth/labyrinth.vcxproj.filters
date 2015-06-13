@@ -95,8 +95,5 @@
     <ClInclude Include="maze\Maze.h">
       <Filter>Header Files\maze</Filter>
     </ClInclude>
-    <ClInclude Include="util.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

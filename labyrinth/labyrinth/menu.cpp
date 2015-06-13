@@ -38,7 +38,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
 
     case 'e':
         g.laby = Maze();
-        g.laby.addLoop(getBoundingBox(Point::ORIGIN, g.windowSize, 10));
+        g.laby.addLoop(getBoundingBox(Point::ORIGIN, (double)g.windowWidth, (double)g.windowHeight, 10));
         std::cout << "edit mode is on; maze cleared, bounding box kept" << std::endl
             << "left-click drag to draw many points; right click to draw one point" << std::endl;
         keyboardFunc('l', x, y);
@@ -47,6 +47,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
         if (!g.paused) {
             keyboardFunc('p', x, y);
         }
+        glutPostRedisplay();
         break;
         
     case 'k':
@@ -116,7 +117,7 @@ void keyboardFunc(unsigned char key, int x, int y) {
 
 void motionFunc(int x, int y) {
     if (g.leftClicking && g.editMode) {
-        Point point = Point(x - g.windowSize/2, g.windowSize - (y + g.windowSize/2), g.lockPoint);
+        Point point = Point(x - g.windowWidth/2, g.windowHeight - (y + g.windowHeight/2), g.lockPoint);
         if (g.laby.getLoops().back().empty() || point.distance(g.laby.getLoops().back().back()) > g.minDistance) {
             g.laby.addToLast(point);
             std::cout << "point (" << x << "," << y << "," << (g.lockPoint ? "true" : "false") << ") added to loop #" << g.laby.getLoops().size() << std::endl;
@@ -128,8 +129,8 @@ void motionFunc(int x, int y) {
 void mouseFunc(int button, int state, int x, int y) {
     g.leftClicking = button == GLUT_LEFT_BUTTON && state == GLUT_DOWN;
     if (button == GLUT_RIGHT_BUTTON && g.editMode && state == GLUT_UP) {
-        x = x - g.windowSize/2;
-        y = g.windowSize - (y + g.windowSize/2);
+        x = x - g.windowWidth/2;
+        y = g.windowHeight - (y + g.windowHeight/2);
         g.laby.addToLast(x, y, g.lockPoint);
         std::cout << "point (" << x << "," << y << "," << (g.lockPoint ? "true" : "false") << ") added to loop #" << g.laby.getLoops().size() << std::endl;
         glutPostRedisplay();

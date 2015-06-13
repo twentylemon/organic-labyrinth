@@ -1,6 +1,6 @@
 
 
-#include "util.h"
+#include "main.h"
 
 using namespace maze;
 using namespace forces;
@@ -37,13 +37,31 @@ LineLoop getSquare(const Point& center, double sideLength, unsigned numPointsPer
     return loop;
 }
 
-LineLoop getBoundingBox(const Point& center, double sideLength, unsigned numPointsPerSide, bool curve) {
-    LineLoop loop = getSquare(center, sideLength, numPointsPerSide);
+LineLoop getBoundingBox(const Point& center, double width, double height, unsigned numPointsPerSide, bool curve) {
+    LineLoop loop;
+    auto xoff = [width,numPointsPerSide](unsigned i){ return width*(double)i/numPointsPerSide; };
+    auto yoff = [height,numPointsPerSide](unsigned i){ return height*(double)i/numPointsPerSide; };
+    for (unsigned i = 0; i < numPointsPerSide; i++) {
+        loop.emplace_back(center + Point(width/2, height/2 - yoff(i)));
+    }
+    for (unsigned i = 0; i < numPointsPerSide; i++) {
+        loop.emplace_back(center + Point(width/2 - xoff(i), -height/2));
+    }
+    for (unsigned i = 0; i < numPointsPerSide; i++) {
+        loop.emplace_back(center + Point(-width/2, -height/2 + yoff(i)));
+    }
+    for (unsigned i = 0; i < numPointsPerSide; i++) {
+        loop.emplace_back(center + Point(-width/2 + xoff(i), height/2));
+    }
     for (unsigned i = 0; i < loop.size(); i++) {
         loop[i].setLocked(true);
     }
     loop.setCurve(curve);
     return loop;
+}
+
+LineLoop getBoundingBox(const Point& center, double sideLength, unsigned numPointsPerSide, bool curve) {
+    return getBoundingBox(center, sideLength, sideLength, numPointsPerSide, curve);
 }
 
 
@@ -156,7 +174,7 @@ void writeSvg(std::ostream& out, const Maze& laby, double xmin, double xmax, dou
     double height = ymax - ymin;
     out << "<?xml version=\"1.0\"?>" << std::endl
         << "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">" << std::endl
-        << "<svg width=\"" << 600 << "\" height=\"" << 600 << "\" "
+        << "<svg width=\"" << g.windowWidth << "\" height=\"" << g.windowHeight << "\" "
         << "viewBox=\"" << xmin << " " << -ymax << " " << width << " " << height << "\" "
         << "version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">" << std::endl;
 

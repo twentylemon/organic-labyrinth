@@ -79,7 +79,6 @@
     <ClCompile Include="maze\Point.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="util.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="maze\forces\AttractionForce.h" />
     <ClInclude Include="maze\forces\BrownianMotion.h" />

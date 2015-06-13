@@ -51,11 +51,12 @@ void displayFunc() {
 
 
 int main(int argc, char** argv) {
-    g.windowSize = 600;
+    g.windowWidth = 1200;
+    g.windowHeight = 600;
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
-    glutInitWindowSize(g.windowSize, g.windowSize);
+    glutInitWindowSize(g.windowWidth, g.windowHeight);
     glutInitWindowPosition(30, 30);
     g.window = glutCreateWindow("organic labyrinth");
 
@@ -67,7 +68,7 @@ int main(int argc, char** argv) {
     g.paused = true;
     g.step = false;
     g.it = 0;
-    g.laby = makeMaze(6);
+    g.laby = makeMaze(MAZE_COMPARE);
     getBounds(g.laby, g.XMIN, g.XMAX, g.YMIN, g.YMAX);
 
     glClearColor(1, 1, 1, 1);
